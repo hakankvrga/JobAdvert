@@ -8,7 +8,7 @@ namespace JobAdvertAPI.Aplication.ViewModels.Users
 {
     public class VM_Create_User
     {
-       
+        public int UserTypeId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

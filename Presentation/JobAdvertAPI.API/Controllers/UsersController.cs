@@ -32,7 +32,7 @@ namespace JobAdvertAPI.API.Controllers
         [HttpGet("id")]
         public async Task<IActionResult> Get(int id)
         {
-            return Ok(_userReadRepository.GetByIdAsync(id));
+            return Ok(await _userReadRepository.GetByIdAsync(id));
         }
 
         [HttpPost]
@@ -40,6 +40,7 @@ namespace JobAdvertAPI.API.Controllers
         {
             await _userWriteRepository.AddAsync(new()
             {
+                UserTypeId= model.UserTypeId,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,
@@ -54,6 +55,7 @@ namespace JobAdvertAPI.API.Controllers
         {
 
             User user= await _userReadRepository.GetByIdAsync(model.Id);
+            user.UserTypeId = model.UserTypeId;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.Email = model.Email;

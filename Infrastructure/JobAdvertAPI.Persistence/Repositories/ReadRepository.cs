@@ -49,7 +49,7 @@ namespace JobAdvertAPI.Persistence.Repositories
         }
 
         public async Task<T> GetByIdAsync(int id, bool tracking = true)
-        // => await Table.FirstOrDefaultAsync(data => data.Id == id);
+        
         {
             var query= Table.AsQueryable();
             if (!tracking)

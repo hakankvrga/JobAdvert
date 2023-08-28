@@ -39,6 +39,7 @@ public partial class JobAdvertContext : DbContext
             {
                 EntityState.Added => data.Entity.CreatedDate = DateTime.Now,
                 EntityState.Modified => data.Entity.UpdatedDate = DateTime.Now,
+                _ => DateTime.UtcNow
             };
         }
 
