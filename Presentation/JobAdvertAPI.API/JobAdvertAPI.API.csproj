@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\JobAdvertAPI.Aplication\JobAdvertAPI.Aplication.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\JobAdvertAPI.Infrastructure\JobAdvertAPI.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\JobAdvertAPI.Persistence\JobAdvertAPI.Persistence.csproj" />
   </ItemGroup>
 
