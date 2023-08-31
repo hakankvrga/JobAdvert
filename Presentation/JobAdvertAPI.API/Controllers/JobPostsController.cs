@@ -1,4 +1,5 @@
 ﻿using JobAdvertAPI.Aplication.Repositories;
+using JobAdvertAPI.Aplication.RequestParameters;
 using JobAdvertAPI.Aplication.ViewModels.JobPosts;
 using JobAdvertAPI.Aplication.ViewModels.Users;
 using JobAdvertAPI.Domain.Entities;
@@ -23,9 +24,28 @@ namespace JobAdvertAPI.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery]Pagination pagination)
         {
-            return Ok(_jobPostReadRepository.GetAll());
+
+            var totalCount= _jobPostReadRepository.GetAll(false).Count();
+
+            var jobPosts = _jobPostReadRepository.GetAll().Skip(pagination.Page * pagination.Size).Take(pagination.Size).Select(j => new
+            {
+                j.Id,
+                j.JobTypeId,
+                j.CompanyName,
+                j.Description,
+                j.StartDate,
+                j.EndDate,
+                j.Title,
+                j.ImagePath
+            }).ToList();
+
+            return Ok(new
+            {
+                jobPosts,
+                totalCount
+            });
         }
 
         [HttpGet("id")]
