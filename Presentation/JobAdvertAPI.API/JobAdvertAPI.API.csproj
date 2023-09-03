@@ -26,4 +26,8 @@
     <ProjectReference Include="..\..\Infrastructure\JobAdvertAPI.Persistence\JobAdvertAPI.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

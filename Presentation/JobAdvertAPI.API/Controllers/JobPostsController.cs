@@ -4,6 +4,7 @@ using JobAdvertAPI.Aplication.ViewModels.JobPosts;
 using JobAdvertAPI.Aplication.ViewModels.Users;
 using JobAdvertAPI.Domain.Entities;
 using JobAdvertAPI.Persistence.Repositories;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -15,11 +16,13 @@ namespace JobAdvertAPI.API.Controllers
     {
         readonly private IJobPostWriteRepository _jobPostWriteRepository;
         readonly private IJobPostReadRepository _jobPostReadRepository;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public JobPostsController(IJobPostWriteRepository JobPostWriteRepository, IJobPostReadRepository JobPostReadRepository)
+        public JobPostsController(IJobPostWriteRepository JobPostWriteRepository, IJobPostReadRepository JobPostReadRepository, IWebHostEnvironment webHostEnvironment)
         {
             _jobPostWriteRepository = JobPostWriteRepository;
             _jobPostReadRepository = JobPostReadRepository;
+            this._webHostEnvironment = webHostEnvironment;
         }
 
 
@@ -94,6 +97,26 @@ namespace JobAdvertAPI.API.Controllers
         {
             await _jobPostWriteRepository.RemoveAsync(id);
             await _jobPostWriteRepository.SaveAsync();
+            return Ok();
+        }
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Upload()
+        {
+            //wwwroot/resource/jobpost-images
+            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "resource/jobpost-images");
+
+            if (!Directory.Exists(uploadPath))  
+                Directory.CreateDirectory(uploadPath);
+
+            Random r = new();
+            foreach (IFormFile file in Request.Form.Files)
+            {
+                string fullPath = Path.Combine(uploadPath, $"{r.Next()}{Path.GetExtension(file.FileName)}");
+
+                using FileStream fileStream = new(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024, useAsync: false);
+                await file.CopyToAsync(fileStream);
+                await fileStream.FlushAsync();
+            }
             return Ok();
         }
     }
