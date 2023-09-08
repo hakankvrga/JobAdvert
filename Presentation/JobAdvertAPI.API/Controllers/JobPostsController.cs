@@ -1,5 +1,6 @@
 ﻿using JobAdvertAPI.Aplication.Repositories;
 using JobAdvertAPI.Aplication.RequestParameters;
+using JobAdvertAPI.Aplication.Services;
 using JobAdvertAPI.Aplication.ViewModels.JobPosts;
 using JobAdvertAPI.Aplication.ViewModels.Users;
 using JobAdvertAPI.Domain.Entities;
@@ -17,12 +18,14 @@ namespace JobAdvertAPI.API.Controllers
         readonly private IJobPostWriteRepository _jobPostWriteRepository;
         readonly private IJobPostReadRepository _jobPostReadRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        readonly IFileService _fileService;
 
-        public JobPostsController(IJobPostWriteRepository JobPostWriteRepository, IJobPostReadRepository JobPostReadRepository, IWebHostEnvironment webHostEnvironment)
+        public JobPostsController(IJobPostWriteRepository JobPostWriteRepository, IJobPostReadRepository JobPostReadRepository, IWebHostEnvironment webHostEnvironment, IFileService fileService)
         {
             _jobPostWriteRepository = JobPostWriteRepository;
             _jobPostReadRepository = JobPostReadRepository;
             this._webHostEnvironment = webHostEnvironment;
+            _fileService = fileService;
         }
 
 
@@ -99,24 +102,12 @@ namespace JobAdvertAPI.API.Controllers
             await _jobPostWriteRepository.SaveAsync();
             return Ok();
         }
+
         [HttpPost("[action]")]
         public async Task<IActionResult> Upload()
         {
-            //wwwroot/resource/jobpost-images
-            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "resource/jobpost-images");
+            await _fileService.UploadAsync("resource/jobPostImages", Request.Form.Files);
 
-            if (!Directory.Exists(uploadPath))  
-                Directory.CreateDirectory(uploadPath);
-
-            Random r = new();
-            foreach (IFormFile file in Request.Form.Files)
-            {
-                string fullPath = Path.Combine(uploadPath, $"{r.Next()}{Path.GetExtension(file.FileName)}");
-
-                using FileStream fileStream = new(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024, useAsync: false);
-                await file.CopyToAsync(fileStream);
-                await fileStream.FlushAsync();
-            }
             return Ok();
         }
     }

@@ -2,6 +2,7 @@
 
 using FluentValidation.AspNetCore;
 using JobAdvertAPI.Aplication.Validators.JobPosts;
+using JobAdvertAPI.Infrastructure;
 using JobAdvertAPI.Infrastructure.Filters;
 using JobAdvertAPI.Persistence;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddInfrastructureServices();
 builder.Services.AddPersistenceServices();
 builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
     .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateJobPostValidator>())

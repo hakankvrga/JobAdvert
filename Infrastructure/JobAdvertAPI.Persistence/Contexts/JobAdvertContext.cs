@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JobAdvertAPI.Domain.Entities;
 using JobAdvertAPI.Domain.Entities.common;
 using Microsoft.EntityFrameworkCore;
+using File = JobAdvertAPI.Domain.Entities.File;
 
 namespace JobAdvertAPI.Persistence.Contexts;
 
@@ -28,6 +29,11 @@ public partial class JobAdvertContext : DbContext
     public virtual DbSet<UserJobPost> UserJobPosts { get; set; }
 
     public virtual DbSet<UserType> UserTypes { get; set; }
+    public virtual DbSet<File> Files { get; set; }
+    public virtual DbSet<UserCvFile> UserCvFiles { get; set; }
+    public virtual DbSet<JobPostImageFile> JobPostImageFiles { get; set; }
+
+    
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -47,7 +53,7 @@ public partial class JobAdvertContext : DbContext
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
-        => optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=JobAdvert;User Id=sa;Password=1234;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=JobAdvert2;User Id=sa;Password=1234;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
