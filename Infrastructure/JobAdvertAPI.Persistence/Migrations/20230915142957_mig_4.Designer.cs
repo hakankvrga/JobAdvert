@@ -4,6 +4,7 @@ using JobAdvertAPI.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobAdvertAPI.Persistence.Migrations
 {
     [DbContext(typeof(JobAdvertContext))]
-    partial class JobAdvertContextModelSnapshot : ModelSnapshot
+    [Migration("20230915142957_mig_4")]
+    partial class mig_4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,24 +272,14 @@ namespace JobAdvertAPI.Persistence.Migrations
                     b.ToTable("UserType", (string)null);
                 });
 
-            modelBuilder.Entity("JobPostJobPostImageFile", b =>
-                {
-                    b.Property<int>("JobPostImageFilesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("JobPostsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("JobPostImageFilesId", "JobPostsId");
-
-                    b.HasIndex("JobPostsId");
-
-                    b.ToTable("JobPostJobPostImageFile");
-                });
-
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.JobPostImageFile", b =>
                 {
                     b.HasBaseType("JobAdvertAPI.Domain.Entities.File");
+
+                    b.Property<int>("JobPostId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("JobPostId");
 
                     b.HasDiscriminator().HasValue("JobPostImageFile");
                 });
@@ -347,19 +340,15 @@ namespace JobAdvertAPI.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("JobPostJobPostImageFile", b =>
+            modelBuilder.Entity("JobAdvertAPI.Domain.Entities.JobPostImageFile", b =>
                 {
-                    b.HasOne("JobAdvertAPI.Domain.Entities.JobPostImageFile", null)
-                        .WithMany()
-                        .HasForeignKey("JobPostImageFilesId")
+                    b.HasOne("JobAdvertAPI.Domain.Entities.JobPost", "JobPost")
+                        .WithMany("JobPostImageFiles")
+                        .HasForeignKey("JobPostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JobAdvertAPI.Domain.Entities.JobPost", null)
-                        .WithMany()
-                        .HasForeignKey("JobPostsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("JobPost");
                 });
 
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.ApplyStatus", b =>
@@ -369,6 +358,8 @@ namespace JobAdvertAPI.Persistence.Migrations
 
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.JobPost", b =>
                 {
+                    b.Navigation("JobPostImageFiles");
+
                     b.Navigation("UserJobPosts");
                 });
 

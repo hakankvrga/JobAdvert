@@ -8,5 +8,6 @@ namespace JobAdvertAPI.Domain.Entities
 {
     public class JobPostImageFile : File
     {
+        public ICollection<JobPost> JobPosts { get; set; }
     }
 }

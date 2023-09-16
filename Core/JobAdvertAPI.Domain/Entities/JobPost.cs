@@ -22,11 +22,12 @@ public partial class JobPost : BaseEntity
 
     public DateTime EndDate { get; set; }
 
-    public string ImagePath { get; set; } = null!;
+    
 
    
 
     public virtual JobType JobType { get; set; } = null!;
+    public ICollection<JobPostImageFile> JobPostImageFiles { get; set; }
 
     public virtual ICollection<UserJobPost> UserJobPosts { get; set; } = new List<UserJobPost>();
 }

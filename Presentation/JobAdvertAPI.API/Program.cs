@@ -4,6 +4,8 @@ using FluentValidation.AspNetCore;
 using JobAdvertAPI.Aplication.Validators.JobPosts;
 using JobAdvertAPI.Infrastructure;
 using JobAdvertAPI.Infrastructure.Filters;
+using JobAdvertAPI.Infrastructure.Services.Storage.Azure;
+using JobAdvertAPI.Infrastructure.Services.Storage.Local;
 using JobAdvertAPI.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddInfrastructureServices();
 builder.Services.AddPersistenceServices();
+//builder.Services.AddStorage(StorageType.Azure);
+//builder.Services.AddStorage<LocalStorage>();
+builder.Services.AddStorage<AzureStorage>();
 builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
     .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateJobPostValidator>())
     .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);

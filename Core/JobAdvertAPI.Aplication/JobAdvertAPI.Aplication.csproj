@@ -26,8 +26,4 @@
     <ProjectReference Include="..\JobAdvertAPI.Domain\JobAdvertAPI.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Abstractions\" />
-  </ItemGroup>
-
 </Project>

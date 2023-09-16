@@ -35,6 +35,13 @@ namespace JobAdvertAPI.Persistence
             services.AddScoped<IUserJobPostWriteRepository, UserJobPostWriteRepository>();
             services.AddScoped<IUserTypeReadRepository, UserTypeReadRepository>();
             services.AddScoped<IUserTypeWriteRepository, UserTypeWriteRepository>();
+            services.AddScoped<IFileWriteRepository, FileWriteRepository>();
+            services.AddScoped<IFileReadRepository, FileReadRepository>();
+            services.AddScoped<IUserCvFileWriteRepository, UserCvFileWriteRepository>();
+            services.AddScoped<IUserCvFileReadRepository, UserCvFileReadRepository>();
+            services.AddScoped<IJobPostImageFileWriteRepository, JobPostImageFileWriteRepository>();
+            services.AddScoped<IJobPostImageFileReadRepository, JobPostImageFileReadRepository>();
+            
            
         }
 
