@@ -1,6 +1,7 @@
 
 
 using FluentValidation.AspNetCore;
+using JobAdvertAPI.Aplication;
 using JobAdvertAPI.Aplication.Validators.JobPosts;
 using JobAdvertAPI.Infrastructure;
 using JobAdvertAPI.Infrastructure.Filters;
@@ -14,6 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddInfrastructureServices();
 builder.Services.AddPersistenceServices();
+builder.Services.AddAplicationServices();
+
+
+
 //builder.Services.AddStorage(StorageType.Azure);
 //builder.Services.AddStorage<LocalStorage>();
 builder.Services.AddStorage<AzureStorage>();
@@ -29,6 +34,9 @@ builder.Services.AddCors(options=> options.AddDefaultPolicy(policy=>
 policy.WithOrigins("https://localhost:4200/", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod()
 
 ) );
+
+
+
 
 var app = builder.Build();
 

@@ -42,10 +42,7 @@ namespace JobAdvertAPI.Aplication.Validators.JobPosts
                 .NotEmpty()
                 .NotNull()
                    .WithMessage("Lütfen bitiş tarihini kısmını boş geçmeyiniz.");
-            RuleFor(j => j.ImagePath)
-               .NotEmpty()
-               .NotNull()
-                  .WithMessage("Lütfen görsel  kısmını boş geçmeyiniz.");
+           
            
 
         }

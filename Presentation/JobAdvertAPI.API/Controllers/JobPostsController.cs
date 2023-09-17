@@ -1,4 +1,12 @@
 ﻿using JobAdvertAPI.Aplication.Abstractions.Storage;
+using JobAdvertAPI.Aplication.Features.Commands.JobPost.CreateJobPost;
+using JobAdvertAPI.Aplication.Features.Commands.JobPost.RemoveJobPost;
+using JobAdvertAPI.Aplication.Features.Commands.JobPost.UpdateJobPost;
+using JobAdvertAPI.Aplication.Features.Commands.JobPostImageFile.RemoveJobPostImage;
+using JobAdvertAPI.Aplication.Features.Commands.JobPostImageFile.UploadJobPostImage;
+using JobAdvertAPI.Aplication.Features.Queries.JobPost.GetAllJobPost;
+using JobAdvertAPI.Aplication.Features.Queries.JobPost.GetByIdJobPost;
+using JobAdvertAPI.Aplication.Features.Queries.JobPostImageFile.GetJobPostImages;
 using JobAdvertAPI.Aplication.Repositories;
 using JobAdvertAPI.Aplication.RequestParameters;
 
@@ -6,6 +14,7 @@ using JobAdvertAPI.Aplication.ViewModels.JobPosts;
 using JobAdvertAPI.Aplication.ViewModels.Users;
 using JobAdvertAPI.Domain.Entities;
 using JobAdvertAPI.Persistence.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,147 +26,77 @@ namespace JobAdvertAPI.API.Controllers
     [ApiController]
     public class JobPostsController : ControllerBase
     {
-        readonly private IJobPostWriteRepository _jobPostWriteRepository;
-        readonly private IJobPostReadRepository _jobPostReadRepository;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+      
        
-        readonly IFileWriteRepository _fileWriteRepository;
-        readonly IFileReadRepository _fileReadRepository;
-        readonly IJobPostImageFileReadRepository _jobPostImageFileReadRepository;
-        readonly IJobPostImageFileWriteRepository _jobPostImageFileWriteRepository;
-        readonly IStorageService _storageService;
-        readonly IConfiguration configuration;
-        public JobPostsController(IJobPostWriteRepository jobPostWriteRepository, IJobPostReadRepository jobPostReadRepository, IWebHostEnvironment webHostEnvironment, IFileWriteRepository fileWriteRepository, IFileReadRepository fileReadRepository, IJobPostImageFileReadRepository jobPostImageFileReadRepository, IJobPostImageFileWriteRepository jobPostImageFileWriteRepository, IStorageService storageService, IConfiguration configuration)
-        {
-            _jobPostWriteRepository = jobPostWriteRepository;
-            _jobPostReadRepository = jobPostReadRepository;
-            _webHostEnvironment = webHostEnvironment;
 
-            _fileWriteRepository = fileWriteRepository;
-            _fileReadRepository = fileReadRepository;
-            _jobPostImageFileReadRepository = jobPostImageFileReadRepository;
-            _jobPostImageFileWriteRepository = jobPostImageFileWriteRepository;
-            _storageService = storageService;
-            this.configuration = configuration;
+        readonly IMediator _mediator;
+
+        
+        public JobPostsController( IMediator mediator)
+        {
+            
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery]Pagination pagination)
+        public async Task<IActionResult> Get([FromQuery] GetAllJobPostQueryRequest getAllJobPostQueryRequest)
         {
-
-            var totalCount= _jobPostReadRepository.GetAll(false).Count();
-
-            var jobPosts = _jobPostReadRepository.GetAll().Skip(pagination.Page * pagination.Size).Take(pagination.Size).Select(j => new
-            {
-                j.Id,
-                j.JobTypeId,
-                j.CompanyName,
-                j.Description,
-                j.StartDate,
-                j.EndDate,
-                j.Title,
-                
-            }).ToList();
-
-            return Ok(new
-            {
-                jobPosts,
-                totalCount
-            });
+          GetAllJobPostQueryResponse response= await  _mediator.Send(getAllJobPostQueryRequest);
+           return Ok(response);
         }
 
-        [HttpGet("id")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> Get([FromRoute] GetByIdJobPostQueryRequest getByIdJobPostQueryRequest)
         {
-            return Ok(await _jobPostReadRepository.GetByIdAsync(id));
+           GetByIdJobPostQueryResponse response= await _mediator.Send(getByIdJobPostQueryRequest);
+            return Ok(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(VM_Create_JobPost model)
+        public async Task<IActionResult> Post(CreateJobPostCommandRequest createJobPostCommandRequest)
         {
-            await _jobPostWriteRepository.AddAsync(new()
-            {
-                UserId=model.UserId,
-                JobTypeId=model.JobTypeId,
-                Title=model.Title,
-                CompanyName = model.CompanyName,
-                Description=model.Description,
-                
-                StartDate = model.StartDate,
-                EndDate = model.EndDate,
-            });
-            await _jobPostWriteRepository.SaveAsync();
+          CreateJobPostCommandResponse response=  await _mediator.Send(createJobPostCommandRequest);
+            
             return StatusCode((int)HttpStatusCode.Created);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put(VM_Update_JobPost model)
+        public async Task<IActionResult> Put([FromBody]UpdateJobPostCommandRequest updateJobPostCommandRequest)
         {
 
-            JobPost jobPost = await _jobPostReadRepository.GetByIdAsync(model.Id);
-            jobPost.UserId = model.UserId;
-            jobPost.JobTypeId = model.JobTypeId;
-            jobPost.Title = model.Title;
-            jobPost.CompanyName = model.CompanyName;
-            jobPost.Description = model.Description;
-            
-            jobPost.StartDate = model.StartDate;
-            jobPost.EndDate = model.EndDate;
-            await _jobPostWriteRepository.SaveAsync();
+         UpdateJobPostCommandResponse response= await _mediator.Send(updateJobPostCommandRequest);
             return Ok();
         }
 
-        [HttpDelete("id")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> Delete([FromRoute]RemoveJobPostCommandRequest removeJobPostCommandRequest )
         {
-            await _jobPostWriteRepository.RemoveAsync(id);
-            await _jobPostWriteRepository.SaveAsync();
+         RemoveJobPostCommandResponse response =  await _mediator.Send(removeJobPostCommandRequest);    
             return Ok();
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Upload(int id)
+        public async Task<IActionResult> Upload([FromQuery] UploadJobPostImageCommandRequest uploadJobPostImageCommandRequest)
         {
-            List<(string fileName, string pathOrContainerName)> result = await _storageService.UploadAsync("photo-images", Request.Form.Files);
-
-
-          JobPost jobPost= await   _jobPostReadRepository.GetByIdAsync(id);
-
-          await  _jobPostImageFileWriteRepository.AddRangeAsync(result.Select(r => new JobPostImageFile
-            {
-                FileName=r.fileName,
-                Path= r.pathOrContainerName,
-                Storage= _storageService.StorageName,
-                JobPosts =new List<JobPost>() { jobPost}
-            }).ToList());
-
-            await _jobPostImageFileWriteRepository.SaveAsync();
+           uploadJobPostImageCommandRequest.Files = Request.Form.Files;
+            UploadJobPostImageCommandResponse uploadJobPostImageCommandResponse= await _mediator.Send(uploadJobPostImageCommandRequest);
             return Ok();
         }
 
 
         [HttpGet("[action]/{id}")]
-        public async Task<IActionResult> GetJobPostImages(int id)
+        public async Task<IActionResult> GetJobPostImages([FromRoute]GetJobPostImagesQueryRequest postImagesQueryRequest)
         {
-          JobPost? jobPost=  await  _jobPostReadRepository.Table.Include(j => j.JobPostImageFiles).FirstOrDefaultAsync(j=> j.Id == id);
-            return Ok(jobPost.JobPostImageFiles.Select(j => new
-            {
-                Path= $"{configuration["BaseStoragaUrl"]}/{j.Path}",
-                j.FileName,
-                j.Id
-                
-            })); 
+            List<GetJobPostImagesQueryResponse> response= await _mediator.Send(postImagesQueryRequest);
+            return Ok(response);
         }
 
 
-        [HttpDelete("[action]/{id}")]
-        public async Task<IActionResult> DeleteJobPostImage(int id, int imageId)
+        [HttpDelete("[action]/{Id}")]
+        public async Task<IActionResult> DeleteJobPostImage([ FromRoute]RemoveJobPostImageCommandRequest removeJobPostImageCommandRequest , [FromQuery] int imageId)
         {
-            JobPost? jobPost = await _jobPostReadRepository.Table.Include(j => j.JobPostImageFiles).FirstOrDefaultAsync(j => j.Id == id);
-
-            JobPostImageFile jobPostImageFile = jobPost.JobPostImageFiles.FirstOrDefault(j => j.Id == imageId);
-            jobPost.JobPostImageFiles.Remove(jobPostImageFile);
-            await _jobPostWriteRepository.SaveAsync();
+            removeJobPostImageCommandRequest.ImageId = imageId;
+            RemoveJobPostImageCommandResponse response= await _mediator.Send(removeJobPostImageCommandRequest);
             return Ok();
         }
     }
