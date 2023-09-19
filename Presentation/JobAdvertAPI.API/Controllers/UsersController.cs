@@ -1,7 +1,6 @@
-﻿using JobAdvertAPI.Aplication.Repositories;
-using JobAdvertAPI.Aplication.ViewModels.Users;
-using JobAdvertAPI.Domain.Entities;
-using JobAdvertAPI.Persistence.Repositories;
+﻿using JobAdvertAPI.Aplication.Features.Commands.AppUser.CreateUser;
+
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -13,64 +12,23 @@ namespace JobAdvertAPI.API.Controllers
     [ApiController]
     public class UsersController : Controller
     {
-        readonly private IUserWriteRepository _userWriteRepository;
-        readonly private IUserReadRepository _userReadRepository;
+       
+        readonly  IMediator _mediator;
 
-        public UsersController(IUserWriteRepository userWriteRepository, IUserReadRepository userReadRepository)
+
+        public UsersController(IMediator mediator)
         {
-            _userWriteRepository = userWriteRepository;
-            _userReadRepository = userReadRepository;
-        }
-
-
-        [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            return Ok(_userReadRepository.GetAll());
-        }
-
-        [HttpGet("id")]
-        public async Task<IActionResult> Get(int id)
-        {
-            return Ok(await _userReadRepository.GetByIdAsync(id));
+            _mediator = mediator;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(VM_Create_User model)
+        public async Task<IActionResult> CreateUser(CreateUserCommandRequest createUserCommandRequest )
         {
-            await _userWriteRepository.AddAsync(new()
-            {
-                UserTypeId= model.UserTypeId,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Email = model.Email,
-                Password = model.Password,
-            });
-            await _userWriteRepository.SaveAsync();
-            return StatusCode((int)HttpStatusCode.Created);
+          CreateUserCommandResponse response=  await _mediator.Send(createUserCommandRequest);
+            return Ok(response);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Put(VM_Update_User model)
-        {
-
-            User user= await _userReadRepository.GetByIdAsync(model.Id);
-            user.UserTypeId = model.UserTypeId;
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
-            user.Email = model.Email;
-            user.Password = model.Password;
-            await _userWriteRepository.SaveAsync();
-            return Ok();
-        }
-
-        [HttpDelete("id")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _userWriteRepository.RemoveAsync(id);
-            await _userWriteRepository.SaveAsync();
-            return Ok();
-        }
+        
 
     }
 }

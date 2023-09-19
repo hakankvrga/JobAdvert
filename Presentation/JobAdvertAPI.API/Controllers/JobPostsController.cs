@@ -1,4 +1,4 @@
-﻿using JobAdvertAPI.Aplication.Abstractions.Storage;
+﻿
 using JobAdvertAPI.Aplication.Features.Commands.JobPost.CreateJobPost;
 using JobAdvertAPI.Aplication.Features.Commands.JobPost.RemoveJobPost;
 using JobAdvertAPI.Aplication.Features.Commands.JobPost.UpdateJobPost;
@@ -7,17 +7,13 @@ using JobAdvertAPI.Aplication.Features.Commands.JobPostImageFile.UploadJobPostIm
 using JobAdvertAPI.Aplication.Features.Queries.JobPost.GetAllJobPost;
 using JobAdvertAPI.Aplication.Features.Queries.JobPost.GetByIdJobPost;
 using JobAdvertAPI.Aplication.Features.Queries.JobPostImageFile.GetJobPostImages;
-using JobAdvertAPI.Aplication.Repositories;
-using JobAdvertAPI.Aplication.RequestParameters;
 
-using JobAdvertAPI.Aplication.ViewModels.JobPosts;
-using JobAdvertAPI.Aplication.ViewModels.Users;
-using JobAdvertAPI.Domain.Entities;
-using JobAdvertAPI.Persistence.Repositories;
+
+
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 using System.Net;
 
 namespace JobAdvertAPI.API.Controllers

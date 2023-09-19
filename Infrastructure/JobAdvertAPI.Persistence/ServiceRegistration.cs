@@ -1,4 +1,5 @@
 ﻿using JobAdvertAPI.Aplication.Repositories;
+using JobAdvertAPI.Domain.Entities.Identity;
 using JobAdvertAPI.Persistence.Contexts;
 using JobAdvertAPI.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -23,18 +24,27 @@ namespace JobAdvertAPI.Persistence
 
             services.AddDbContext<JobAdvertContext>(options => options.UseSqlServer(configurationManager.GetConnectionString("SqlCon")) );
 
+            services.AddIdentity<AppUser, AppRole>(options =>
+            {
+                options.Password.RequiredLength = 3;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.User.AllowedUserNameCharacters = "abcçdefgğhijklmnoöpqrsştuüvwxyzABCÇDEFGĞHIJKLMNOÖPQRSŞTUÜVWXYZ";
+            }).AddEntityFrameworkStores<JobAdvertContext>();
+
+
             services.AddScoped<IApplyStatusReadRepository, ApplyStatusReadRepository>();
             services.AddScoped<IApplyStatusWriteRepository, ApplyStatusWriteRepository>();
             services.AddScoped<IJobPostReadRepository, JobPostReadRepository>();
             services.AddScoped<IJobPostWriteRepository, JobPostWriteRepository>();
             services.AddScoped<IJobTypeReadRepository, JobTypeReadRepository>();
             services.AddScoped<IJobTypeWriteRepository, JobTypeWriteRepository>();
-            services.AddScoped<IUserWriteRepository, UserWriteRepository>();
-            services.AddScoped<IUserReadRepository, UserReadRepository>();
+           
             services.AddScoped<IUserJobPostReadRepository, UserJobPostReadRepository>();
             services.AddScoped<IUserJobPostWriteRepository, UserJobPostWriteRepository>();
-            services.AddScoped<IUserTypeReadRepository, UserTypeReadRepository>();
-            services.AddScoped<IUserTypeWriteRepository, UserTypeWriteRepository>();
+          
             services.AddScoped<IFileWriteRepository, FileWriteRepository>();
             services.AddScoped<IFileReadRepository, FileReadRepository>();
             services.AddScoped<IUserCvFileWriteRepository, UserCvFileWriteRepository>();

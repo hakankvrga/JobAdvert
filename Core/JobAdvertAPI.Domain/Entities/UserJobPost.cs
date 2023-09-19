@@ -22,5 +22,5 @@ public partial class UserJobPost : BaseEntity
 
     public virtual JobPost JobPost { get; set; } = null!;
 
-    public virtual User User { get; set; } = null!;
+    //public virtual User User { get; set; } = null!;
 }
