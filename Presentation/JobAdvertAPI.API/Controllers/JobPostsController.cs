@@ -11,7 +11,7 @@ using JobAdvertAPI.Aplication.Features.Queries.JobPostImageFile.GetJobPostImages
 
 
 using MediatR;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using System.Net;
@@ -20,6 +20,7 @@ namespace JobAdvertAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Employer")]
     public class JobPostsController : ControllerBase
     {
       

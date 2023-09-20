@@ -1,10 +1,12 @@
 ﻿
 using JobAdvertAPI.Aplication.Abstractions.Storage;
+using JobAdvertAPI.Aplication.Abstractions.Token;
 using JobAdvertAPI.Infrastructure.Enums;
 using JobAdvertAPI.Infrastructure.Services;
 using JobAdvertAPI.Infrastructure.Services.Storage;
 using JobAdvertAPI.Infrastructure.Services.Storage.Azure;
 using JobAdvertAPI.Infrastructure.Services.Storage.Local;
+using JobAdvertAPI.Infrastructure.Services.Token;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -19,6 +21,8 @@ namespace JobAdvertAPI.Infrastructure
         public static void AddInfrastructureServices(this IServiceCollection serviceCollection)
         {
            serviceCollection.AddScoped<IStorageService,StorageService>();
+           serviceCollection.AddScoped<ITokenHandler,TokenHandler>();
+            
         }
 
         public static void AddStorage<T>(this IServiceCollection serviceCollection) where T : Storage, IStorage
