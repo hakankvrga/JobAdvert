@@ -1,4 +1,6 @@
-﻿using JobAdvertAPI.Aplication.Exceptions;
+﻿using JobAdvertAPI.Aplication.Abstractions.Services;
+using JobAdvertAPI.Aplication.DTOs.User;
+using JobAdvertAPI.Aplication.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -11,39 +13,37 @@ namespace JobAdvertAPI.Aplication.Features.Commands.AppUser.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
     {
-        readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
+        readonly IUserService _userService;
 
-        public CreateUserCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager)
+        public CreateUserCommandHandler(IUserService userService)
         {
-            _userManager = userManager;
+            _userService = userService;
         }
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-         IdentityResult result=  await _userManager.CreateAsync(new Domain.Entities.Identity.AppUser
+
+            CreateUserResponse response = await _userService.CreateAsync(new()
             {
-                Id= Guid.NewGuid().ToString(),
+                Email = request.email,
                 NameSurname = request.nameSurname,
                 UserName = request.userName,
-                Email = request.email
-            }, request.password);
-        
+                Password = request.password,
+                PasswordConfirm = request.passwordConfirm
+            });
 
-            CreateUserCommandResponse response = new() { Succeeded = result.Succeeded };
-            if (result.Succeeded)
-                response.Message = "Kullanıcı başarıyla oluşturuldu";
-            else
-                foreach (var error in result.Errors)
-                    response.Message += $"{error.Code} - {error.Description}\n";
+            return new()
+            {
+                Message= response.Message,
+                Succeeded = response.Succeeded
+            };
 
-            return response;    
-            
-            
+
 
 
 
             //throw new UserCreateFailedException();
-            
+
         }
     }
 }

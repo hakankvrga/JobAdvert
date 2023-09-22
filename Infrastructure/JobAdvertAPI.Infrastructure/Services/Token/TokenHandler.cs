@@ -19,7 +19,7 @@ namespace JobAdvertAPI.Infrastructure.Services.Token
             _configuration = configuration;
         }
 
-        public Aplication.DTOs.Token CreateAccessToken(int minute)
+        public Aplication.DTOs.Token CreateAccessToken(int second)
         {
            Aplication.DTOs.Token token = new ();
 
@@ -30,7 +30,7 @@ namespace JobAdvertAPI.Infrastructure.Services.Token
             SigningCredentials signingCredentials = new(securityKey, SecurityAlgorithms.HmacSha256);
 
             //oluşturulacak token ayarlarını veriyoruz
-            token.Expiration = DateTime.UtcNow.AddMinutes(minute);
+            token.Expiration = DateTime.UtcNow.AddMinutes(second);
             JwtSecurityToken securityToken= new(
                                issuer: _configuration["Token:Issuer"],
                                audience: _configuration["Token:Audience"],

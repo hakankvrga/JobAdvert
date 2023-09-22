@@ -1,4 +1,5 @@
-﻿using JobAdvertAPI.Aplication.Abstractions.Token;
+﻿using JobAdvertAPI.Aplication.Abstractions.Services;
+using JobAdvertAPI.Aplication.Abstractions.Token;
 using JobAdvertAPI.Aplication.DTOs;
 using JobAdvertAPI.Aplication.Exceptions;
 using MediatR;
@@ -13,45 +14,21 @@ namespace JobAdvertAPI.Aplication.Features.Commands.AppUser.LoginUser
 {
     public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, LoginUserCommandResponse>
     {
-        readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
-        readonly SignInManager<Domain.Entities.Identity.AppUser> _signInManager;
-        readonly ITokenHandler _tokenHandler;
+       readonly IAuthService _authService;
 
-        public LoginUserCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager, SignInManager<Domain.Entities.Identity.AppUser> signInManager, ITokenHandler tokenHandler)
+        public LoginUserCommandHandler(IAuthService authService)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _tokenHandler = tokenHandler;
+            _authService = authService;
         }
 
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            Domain.Entities.Identity.AppUser user = await _userManager.FindByNameAsync(request.UsernameOrEmail);
-            if (user == null)
-            {
-                   user = await _userManager.FindByEmailAsync(request.UsernameOrEmail);
-                if (user == null)
-                {
-                    throw new NotFoundUserException();
-                }
-            }
-            
+           var token= await _authService.LoginAsync(request.UsernameOrEmail, request.Password, 15);
 
-            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-            if (result.Succeeded) // auth başarılı
+            return new LoginUserSuccessCommandResponse()
             {
-                Token token = _tokenHandler.CreateAccessToken(5);
-                return new LoginUserSuccessCommandResponse()
-                {
-                    Token = token
-                };
-            }
-            //return new LoginUserFailCommandResponse()
-            //{
-            //    Message = "Kullanıcı adı veya şifre hatalı"
-            //};
-            throw new AuthenticationErrorException();
-            
+                Token = token
+            };
         }
     }
     

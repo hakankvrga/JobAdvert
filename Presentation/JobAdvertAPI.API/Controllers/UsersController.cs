@@ -1,4 +1,5 @@
 ﻿using JobAdvertAPI.Aplication.Features.Commands.AppUser.CreateUser;
+using JobAdvertAPI.Aplication.Features.Commands.AppUser.GoogleLogin;
 using JobAdvertAPI.Aplication.Features.Commands.AppUser.LoginUser;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -28,11 +29,9 @@ namespace JobAdvertAPI.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> Login(LoginUserCommandRequest loginUserCommandRequest)
-        {
-            LoginUserCommandResponse response = await _mediator.Send(loginUserCommandRequest);
-            return Ok(response);
-        }
+       
+
+
+
     }
 }
