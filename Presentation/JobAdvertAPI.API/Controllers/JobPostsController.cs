@@ -38,13 +38,15 @@ namespace JobAdvertAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllJobPostQueryRequest getAllJobPostQueryRequest)
         {
-          GetAllJobPostQueryResponse response= await  _mediator.Send(getAllJobPostQueryRequest);
+            
+           GetAllJobPostQueryResponse response= await  _mediator.Send(getAllJobPostQueryRequest);
            return Ok(response);
         }
 
         [HttpGet("{Id}")]
         public async Task<IActionResult> Get([FromRoute] GetByIdJobPostQueryRequest getByIdJobPostQueryRequest)
         {
+            
            GetByIdJobPostQueryResponse response= await _mediator.Send(getByIdJobPostQueryRequest);
             return Ok(response);
         }

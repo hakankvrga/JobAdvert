@@ -8,6 +8,7 @@ using JobAdvertAPI.Aplication.Features.Commands.AppUser.LoginUser;
 using JobAdvertAPI.Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -23,13 +24,15 @@ namespace JobAdvertAPI.Persistence.Services
         readonly UserManager<AppUser> _userManager;
         readonly ITokenHandler _tokenHandler;
         readonly SignInManager<AppUser> _signInManager;
+        readonly IUserService _userService;
 
-        public AuthService(IConfiguration configuration, UserManager<Domain.Entities.Identity.AppUser> userManager, ITokenHandler tokenHandler, SignInManager<AppUser> signInManager)
+        public AuthService(IConfiguration configuration, UserManager<Domain.Entities.Identity.AppUser> userManager, ITokenHandler tokenHandler, SignInManager<AppUser> signInManager, IUserService userService)
         {
             _configuration = configuration;
             _userManager = userManager;
             _tokenHandler = tokenHandler;
             _signInManager = signInManager;
+            _userService = userService;
         }
 
         async  Task<Token> CreateUserExternalAsync(AppUser user,string email,string givenName,string name, UserLoginInfo info, int accessTokenLifeTime)
@@ -79,6 +82,8 @@ namespace JobAdvertAPI.Persistence.Services
                 throw new Exception("Invalid external authentication");
 
             Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime);
+            await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 5);
+
 
             return token;
         }
@@ -115,6 +120,7 @@ namespace JobAdvertAPI.Persistence.Services
             if (result.Succeeded) // auth başarılı
             {
                 Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime);
+                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 5);
                 return token;
             }
             //return new LoginUserFailCommandResponse()
@@ -123,6 +129,19 @@ namespace JobAdvertAPI.Persistence.Services
             //};
             throw new AuthenticationErrorException();
 
+        }
+
+        public  async Task<Token> RefreshTokenLoginAsync(string refreshToken)
+        {
+            AppUser? user= await _userManager.Users.FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
+            if (user == null && user?.RefreshTokenEndDate > DateTime.UtcNow)
+            {
+                Token token = _tokenHandler.CreateAccessToken(15);
+                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 5);
+                return token;
+            }
+            else
+                throw new NotFoundUserException();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using JobAdvertAPI.Aplication.Abstractions.Services;
 using JobAdvertAPI.Aplication.DTOs.User;
+using JobAdvertAPI.Aplication.Exceptions;
 using JobAdvertAPI.Aplication.Features.Commands.AppUser.CreateUser;
 using JobAdvertAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -23,7 +24,7 @@ namespace JobAdvertAPI.Persistence.Services
 
         public async Task<CreateUserResponse> CreateAsync(CreateUser model)
         {
-            
+
             IdentityResult result = await _userManager.CreateAsync(new Domain.Entities.Identity.AppUser
             {
                 Id = Guid.NewGuid().ToString(),
@@ -41,5 +42,20 @@ namespace JobAdvertAPI.Persistence.Services
                     response.Message += $"{error.Code} - {error.Description}\n";
             return response;
         }
+
+        public async Task UpdateRefreshToken(string refreshToken, AppUser user, DateTime accesTokenDate, int addOnAccessTokenDate)
+        {
+            
+            if (user != null)
+            {
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenEndDate = accesTokenDate.AddSeconds( addOnAccessTokenDate);
+                await _userManager.UpdateAsync(user);
+            }
+            else
+                throw new NotFoundUserException();
+            
+        }
     }
 }
+
