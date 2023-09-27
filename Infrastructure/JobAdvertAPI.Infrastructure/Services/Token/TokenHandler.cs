@@ -1,10 +1,12 @@
 ﻿using JobAdvertAPI.Aplication.Abstractions.Token;
+using JobAdvertAPI.Domain.Entities.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +22,7 @@ namespace JobAdvertAPI.Infrastructure.Services.Token
             _configuration = configuration;
         }
 
-        public Aplication.DTOs.Token CreateAccessToken(int second)
+        public Aplication.DTOs.Token CreateAccessToken(int second, AppUser user)
         {
            Aplication.DTOs.Token token = new ();
 
@@ -37,7 +39,8 @@ namespace JobAdvertAPI.Infrastructure.Services.Token
                                audience: _configuration["Token:Audience"],
                                expires: token.Expiration,
                                notBefore: DateTime.UtcNow,
-                               signingCredentials: signingCredentials
+                               signingCredentials: signingCredentials,
+                               claims: new List<Claim> { new(ClaimTypes.Name, user.UserName) }
                                                );
 
             //token oluşturucu sınıfından bir örnek alıyoruz

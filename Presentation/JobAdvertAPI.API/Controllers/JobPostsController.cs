@@ -2,6 +2,7 @@
 using JobAdvertAPI.Aplication.Features.Commands.JobPost.CreateJobPost;
 using JobAdvertAPI.Aplication.Features.Commands.JobPost.RemoveJobPost;
 using JobAdvertAPI.Aplication.Features.Commands.JobPost.UpdateJobPost;
+using JobAdvertAPI.Aplication.Features.Commands.JobPostImageFile.ChangeShowcaseImage;
 using JobAdvertAPI.Aplication.Features.Commands.JobPostImageFile.RemoveJobPostImage;
 using JobAdvertAPI.Aplication.Features.Commands.JobPostImageFile.UploadJobPostImage;
 using JobAdvertAPI.Aplication.Features.Queries.JobPost.GetAllJobPost;
@@ -20,7 +21,7 @@ namespace JobAdvertAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Employer")]
+    
     public class JobPostsController : ControllerBase
     {
       
@@ -52,6 +53,7 @@ namespace JobAdvertAPI.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Employer")]
         public async Task<IActionResult> Post(CreateJobPostCommandRequest createJobPostCommandRequest)
         {
           CreateJobPostCommandResponse response=  await _mediator.Send(createJobPostCommandRequest);
@@ -60,6 +62,7 @@ namespace JobAdvertAPI.API.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = "Employer")]
         public async Task<IActionResult> Put([FromBody]UpdateJobPostCommandRequest updateJobPostCommandRequest)
         {
 
@@ -68,6 +71,7 @@ namespace JobAdvertAPI.API.Controllers
         }
 
         [HttpDelete("{Id}")]
+        [Authorize(AuthenticationSchemes = "Employer")]
         public async Task<IActionResult> Delete([FromRoute]RemoveJobPostCommandRequest removeJobPostCommandRequest )
         {
          RemoveJobPostCommandResponse response =  await _mediator.Send(removeJobPostCommandRequest);    
@@ -75,6 +79,7 @@ namespace JobAdvertAPI.API.Controllers
         }
 
         [HttpPost("[action]")]
+        [Authorize(AuthenticationSchemes = "Employer")]
         public async Task<IActionResult> Upload([FromQuery] UploadJobPostImageCommandRequest uploadJobPostImageCommandRequest)
         {
            uploadJobPostImageCommandRequest.Files = Request.Form.Files;
@@ -84,6 +89,7 @@ namespace JobAdvertAPI.API.Controllers
 
 
         [HttpGet("[action]/{id}")]
+        [Authorize(AuthenticationSchemes = "Employer")]
         public async Task<IActionResult> GetJobPostImages([FromRoute]GetJobPostImagesQueryRequest postImagesQueryRequest)
         {
             List<GetJobPostImagesQueryResponse> response= await _mediator.Send(postImagesQueryRequest);
@@ -92,11 +98,22 @@ namespace JobAdvertAPI.API.Controllers
 
 
         [HttpDelete("[action]/{Id}")]
+        [Authorize(AuthenticationSchemes = "Employer")]
         public async Task<IActionResult> DeleteJobPostImage([ FromRoute]RemoveJobPostImageCommandRequest removeJobPostImageCommandRequest , [FromQuery] int imageId)
         {
             removeJobPostImageCommandRequest.ImageId = imageId;
             RemoveJobPostImageCommandResponse response= await _mediator.Send(removeJobPostImageCommandRequest);
             return Ok();
         }
+
+        [HttpGet("[action]")]
+        [Authorize(AuthenticationSchemes = "Employer")]
+        public async Task<IActionResult> ChangeShowcaseImage([FromQuery] ChangeShowcaseImageCommandRequest changeShowcaseImageCommandRequest)
+        {
+            ChangeShowcaseImageCommandResponse response = await _mediator.Send(changeShowcaseImageCommandRequest);
+            return Ok(response);
+        }
+    
+    
     }
 }

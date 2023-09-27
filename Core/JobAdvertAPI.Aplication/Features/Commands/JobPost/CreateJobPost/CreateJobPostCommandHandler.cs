@@ -22,7 +22,7 @@ namespace JobAdvertAPI.Aplication.Features.Commands.JobPost.CreateJobPost
             await _jobPostWriteRepository.AddAsync(new()
             {
                 UserId = request.UserId,
-                JobTypeId = request.JobTypeId,
+                
                 Title = request.Title,
                 CompanyName = request.CompanyName,
                 Description = request.Description,

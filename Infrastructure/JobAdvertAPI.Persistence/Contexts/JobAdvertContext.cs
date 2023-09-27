@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+
 using JobAdvertAPI.Domain.Entities;
 using JobAdvertAPI.Domain.Entities.common;
 using JobAdvertAPI.Domain.Entities.Identity;
@@ -25,13 +25,8 @@ public partial class JobAdvertContext : IdentityDbContext<AppUser,AppRole, strin
 
     public virtual DbSet<JobPost> JobPosts { get; set; }
 
-    public virtual DbSet<JobType> JobTypes { get; set; }
-
-    
-
     public virtual DbSet<UserJobPost> UserJobPosts { get; set; }
 
-    
     public virtual DbSet<File> Files { get; set; }
     public virtual DbSet<UserCvFile> UserCvFiles { get; set; }
     public virtual DbSet<JobPostImageFile> JobPostImageFiles { get; set; }
@@ -56,7 +51,7 @@ public partial class JobAdvertContext : IdentityDbContext<AppUser,AppRole, strin
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
-        => optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=JobAdvert2;User Id=sa;Password=1234;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=JobAdvert;User Id=sa;Password=1234;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -86,22 +81,8 @@ public partial class JobAdvertContext : IdentityDbContext<AppUser,AppRole, strin
             entity.Property(e => e.Title).HasMaxLength(200);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
-            entity.HasOne(d => d.JobType).WithMany(p => p.JobPosts)
-                .HasForeignKey(d => d.JobTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_JobPost_JobType");
+           
         });
-
-        modelBuilder.Entity<JobType>(entity =>
-        {
-            entity.ToTable("JobType");
-
-            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-            entity.Property(e => e.Type).HasMaxLength(500);
-            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
-        });
-
-       
 
         modelBuilder.Entity<UserJobPost>(entity =>
         {
@@ -125,7 +106,6 @@ public partial class JobAdvertContext : IdentityDbContext<AppUser,AppRole, strin
 
         });
 
-    
 
         OnModelCreatingPartial(modelBuilder);
     }

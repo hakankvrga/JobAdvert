@@ -26,7 +26,7 @@ namespace JobAdvertAPI.Aplication.Features.Queries.JobPost.GetByIdJobPost
           JobAdvertAPI.Domain.Entities.JobPost jobPost=  await _jobPostReadRepository.GetByIdAsync(request.Id);
             return new()
             {
-                JobTypeId = jobPost.JobTypeId,
+                
                 UserId = jobPost.UserId,
                 CompanyName = jobPost.CompanyName,
                 Description = jobPost.Description,

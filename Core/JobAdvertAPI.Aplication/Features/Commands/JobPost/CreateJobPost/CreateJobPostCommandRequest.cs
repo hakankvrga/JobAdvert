@@ -10,7 +10,7 @@ namespace JobAdvertAPI.Aplication.Features.Commands.JobPost.CreateJobPost
     public class CreateJobPostCommandRequest : IRequest<CreateJobPostCommandResponse>
     {
         public int UserId { get; set; }
-        public int JobTypeId { get; set; }
+       
         public string Title { get; set; }
         public string CompanyName { get; set; }
         public string Description { get; set; }

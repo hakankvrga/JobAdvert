@@ -11,7 +11,7 @@ namespace JobAdvertAPI.Aplication.Features.Queries.JobPost.GetByIdJobPost
     {
         public int UserId { get; set; }
 
-        public int JobTypeId { get; set; }
+      
 
         public string Title { get; set; } = null!;
 

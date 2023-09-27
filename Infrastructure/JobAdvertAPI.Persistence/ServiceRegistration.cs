@@ -42,8 +42,7 @@ namespace JobAdvertAPI.Persistence
             services.AddScoped<IApplyStatusWriteRepository, ApplyStatusWriteRepository>();
             services.AddScoped<IJobPostReadRepository, JobPostReadRepository>();
             services.AddScoped<IJobPostWriteRepository, JobPostWriteRepository>();
-            services.AddScoped<IJobTypeReadRepository, JobTypeReadRepository>();
-            services.AddScoped<IJobTypeWriteRepository, JobTypeWriteRepository>();
+           
            
             services.AddScoped<IUserJobPostReadRepository, UserJobPostReadRepository>();
             services.AddScoped<IUserJobPostWriteRepository, UserJobPostWriteRepository>();

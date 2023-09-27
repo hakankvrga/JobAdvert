@@ -209,9 +209,6 @@ namespace JobAdvertAPI.Persistence.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("JobTypeId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime");
 
@@ -228,33 +225,7 @@ namespace JobAdvertAPI.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("JobTypeId");
-
                     b.ToTable("JobPost", (string)null);
-                });
-
-            modelBuilder.Entity("JobAdvertAPI.Domain.Entities.JobType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("JobType", (string)null);
                 });
 
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.UserJobPost", b =>
@@ -418,6 +389,9 @@ namespace JobAdvertAPI.Persistence.Migrations
                 {
                     b.HasBaseType("JobAdvertAPI.Domain.Entities.File");
 
+                    b.Property<bool>("Showcase")
+                        .HasColumnType("bit");
+
                     b.HasDiscriminator().HasValue("JobPostImageFile");
                 });
 
@@ -426,17 +400,6 @@ namespace JobAdvertAPI.Persistence.Migrations
                     b.HasBaseType("JobAdvertAPI.Domain.Entities.File");
 
                     b.HasDiscriminator().HasValue("UserCvFile");
-                });
-
-            modelBuilder.Entity("JobAdvertAPI.Domain.Entities.JobPost", b =>
-                {
-                    b.HasOne("JobAdvertAPI.Domain.Entities.JobType", "JobType")
-                        .WithMany("JobPosts")
-                        .HasForeignKey("JobTypeId")
-                        .IsRequired()
-                        .HasConstraintName("FK_JobPost_JobType");
-
-                    b.Navigation("JobType");
                 });
 
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.UserJobPost", b =>
@@ -532,11 +495,6 @@ namespace JobAdvertAPI.Persistence.Migrations
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.JobPost", b =>
                 {
                     b.Navigation("UserJobPosts");
-                });
-
-            modelBuilder.Entity("JobAdvertAPI.Domain.Entities.JobType", b =>
-                {
-                    b.Navigation("JobPosts");
                 });
 #pragma warning restore 612, 618
         }

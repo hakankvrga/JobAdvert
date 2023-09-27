@@ -10,7 +10,7 @@ public partial class JobPost : BaseEntity
 
     public int UserId { get; set; }
 
-    public int JobTypeId { get; set; }
+    
 
     public string Title { get; set; } = null!;
 
@@ -26,7 +26,7 @@ public partial class JobPost : BaseEntity
 
    
 
-    public virtual JobType JobType { get; set; } = null!;
+    
     public ICollection<JobPostImageFile> JobPostImageFiles { get; set; }
 
     public virtual ICollection<UserJobPost> UserJobPosts { get; set; } = new List<UserJobPost>();
