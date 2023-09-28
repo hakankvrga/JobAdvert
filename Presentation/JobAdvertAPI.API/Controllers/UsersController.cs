@@ -1,4 +1,5 @@
 ﻿using JobAdvertAPI.Aplication.Features.Commands.AppUser.CreateUser;
+using JobAdvertAPI.Aplication.Features.Commands.AppUser.CreateUser.CreateNormalUser;
 using JobAdvertAPI.Aplication.Features.Commands.AppUser.GoogleLogin;
 using JobAdvertAPI.Aplication.Features.Commands.AppUser.LoginUser;
 using MediatR;
@@ -29,7 +30,12 @@ namespace JobAdvertAPI.API.Controllers
             return Ok(response);
         }
 
-       
+        [HttpPost("[action]")]
+        public async Task<IActionResult> CreateNormalUser(CreateNormalUserCommandRequest createNormalUserCommandRequest)
+        {
+            CreateNormalUserCommandResponse response = await _mediator.Send(createNormalUserCommandRequest);
+            return Ok(response);
+        }
 
 
 

@@ -84,6 +84,11 @@ public partial class JobAdvertContext : IdentityDbContext<AppUser,AppRole, strin
            
         });
 
+        modelBuilder.Entity<AppRole>().HasData(
+       new AppRole { Id = "1", Name = AppRole.EmployerRole, NormalizedName = AppRole.EmployerRole.ToUpper() },
+       new AppRole { Id = "2", Name = AppRole.NormalUserRole, NormalizedName = AppRole.NormalUserRole.ToUpper() }
+   );
+
         modelBuilder.Entity<UserJobPost>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_ApplyStatus");

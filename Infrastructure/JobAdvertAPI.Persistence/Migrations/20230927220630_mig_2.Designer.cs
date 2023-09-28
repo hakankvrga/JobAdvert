@@ -4,6 +4,7 @@ using JobAdvertAPI.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobAdvertAPI.Persistence.Migrations
 {
     [DbContext(typeof(JobAdvertContext))]
-    partial class JobAdvertContextModelSnapshot : ModelSnapshot
+    [Migration("20230927220630_mig_2")]
+    partial class mig_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,22 +112,6 @@ namespace JobAdvertAPI.Persistence.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "1",
-                            ConcurrencyStamp = "c2f492b4-c4f0-407a-95e5-a8861abb893f",
-                            Name = "Employer",
-                            NormalizedName = "EMPLOYER"
-                        },
-                        new
-                        {
-                            Id = "2",
-                            ConcurrencyStamp = "fb0af7e0-b0d1-486c-8030-a36a1f516536",
-                            Name = "NormalUser",
-                            NormalizedName = "NORMALUSER"
-                        });
                 });
 
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.Identity.AppUser", b =>

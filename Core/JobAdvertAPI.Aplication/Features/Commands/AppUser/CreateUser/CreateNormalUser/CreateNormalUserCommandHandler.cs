@@ -1,6 +1,5 @@
 ﻿using JobAdvertAPI.Aplication.Abstractions.Services;
 using JobAdvertAPI.Aplication.DTOs.User;
-using JobAdvertAPI.Aplication.Exceptions;
 using JobAdvertAPI.Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -10,21 +9,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JobAdvertAPI.Aplication.Features.Commands.AppUser.CreateUser
+namespace JobAdvertAPI.Aplication.Features.Commands.AppUser.CreateUser.CreateNormalUser
 {
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
+    public class CreateNormalUserCommandHandler : IRequestHandler<CreateNormalUserCommandRequest, CreateNormalUserCommandResponse>
     {
         readonly IUserService _userService;
         private readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
 
 
-        public CreateUserCommandHandler(IUserService userService, UserManager<Domain.Entities.Identity.AppUser> userManager)
+        public CreateNormalUserCommandHandler(IUserService userService, UserManager<Domain.Entities.Identity.AppUser> userManager)
         {
             _userService = userService;
             _userManager = userManager;
         }
 
-        public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
+        public async Task<CreateNormalUserCommandResponse> Handle(CreateNormalUserCommandRequest request, CancellationToken cancellationToken)
         {
 
             CreateUserResponse response = await _userService.CreateAsync(new()
@@ -41,21 +40,14 @@ namespace JobAdvertAPI.Aplication.Features.Commands.AppUser.CreateUser
                 var user = await _userManager.FindByNameAsync(request.userName);
                 if (user != null)
                 {
-                    await _userManager.AddToRoleAsync(user, AppRole.EmployerRole);
+                    await _userManager.AddToRoleAsync(user, AppRole.NormalUserRole);
                 }
             }
             return new()
             {
-                Message= response.Message,
+                Message = response.Message,
                 Succeeded = response.Succeeded
             };
-
-
-
-
-
-            //throw new UserCreateFailedException();
-
         }
     }
 }

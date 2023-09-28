@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JobAdvertAPI.Aplication.Features.Commands.AppUser.CreateUser
+namespace JobAdvertAPI.Aplication.Features.Commands.AppUser.CreateUser.CreateNormalUser
 {
-    public class CreateUserCommandResponse
+    public class CreateNormalUserCommandResponse
     {
         public bool Succeeded { get; set; }
         public string Message { get; set; }
