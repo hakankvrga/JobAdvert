@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace JobAdvertAPI.Persistence.Migrations
 {
     /// <inheritdoc />
@@ -92,7 +94,6 @@ namespace JobAdvertAPI.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     CompanyName = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -262,6 +263,15 @@ namespace JobAdvertAPI.Persistence.Migrations
                         column: x => x.JobPostId,
                         principalTable: "JobPost",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "1", "41cd717a-e5ab-40f2-884c-b5e97b97925e", "Employer", "EMPLOYER" },
+                    { "2", "e86c286f-c3a7-47a5-a32b-f905ba917a1f", "NormalUser", "NORMALUSER" }
                 });
 
             migrationBuilder.CreateIndex(

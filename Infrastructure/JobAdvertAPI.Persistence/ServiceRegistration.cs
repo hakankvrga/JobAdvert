@@ -4,6 +4,7 @@ using JobAdvertAPI.Aplication.Repositories;
 using JobAdvertAPI.Domain.Entities.Identity;
 using JobAdvertAPI.Persistence.Contexts;
 using JobAdvertAPI.Persistence.Repositories;
+using JobAdvertAPI.Persistence.Repositories;
 using JobAdvertAPI.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -58,6 +59,10 @@ namespace JobAdvertAPI.Persistence
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IExternalAuthentication, AuthService>();
             services.AddScoped<IInternalAuthentication, AuthService>();
+            services.AddScoped<IJobPostAppUserReadRepository, JobPostAppUserReadRepository>();
+            services.AddScoped<IJobPostAppUserWriteRepository, JobPostAppUserWriteRepository>();
+           
+
 
         }
 

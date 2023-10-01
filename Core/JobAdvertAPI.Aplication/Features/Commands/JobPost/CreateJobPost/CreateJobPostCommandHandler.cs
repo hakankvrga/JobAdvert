@@ -21,7 +21,7 @@ namespace JobAdvertAPI.Aplication.Features.Commands.JobPost.CreateJobPost
         {
             await _jobPostWriteRepository.AddAsync(new()
             {
-                UserId = request.UserId,
+                
                 
                 Title = request.Title,
                 CompanyName = request.CompanyName,

@@ -8,8 +8,7 @@ namespace JobAdvertAPI.Aplication.ViewModels.JobPosts
 {
     public class VM_Create_JobPost
     {
-        public int UserId { get; set; }
-        public int JobTypeId { get; set; }
+        
         public string Title { get; set; }
         public string CompanyName { get; set; }
         public string Description { get; set; }

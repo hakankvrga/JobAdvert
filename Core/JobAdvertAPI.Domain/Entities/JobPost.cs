@@ -1,16 +1,10 @@
 ﻿using JobAdvertAPI.Domain.Entities.common;
-using System;
-using System.Collections.Generic;
+using JobAdvertAPI.Domain.Entities.Identity;
 
 namespace JobAdvertAPI.Domain.Entities;
 
 public partial class JobPost : BaseEntity
 {
-    
-
-    public int UserId { get; set; }
-
-    
 
     public string Title { get; set; } = null!;
 
@@ -20,14 +14,10 @@ public partial class JobPost : BaseEntity
 
     public DateTime StartDate { get; set; }
 
+
+    public ICollection<AppUser> AppUsers { get; set; }
     public DateTime EndDate { get; set; }
 
-    
-
-   
-
-    
     public ICollection<JobPostImageFile> JobPostImageFiles { get; set; }
-
     public virtual ICollection<UserJobPost> UserJobPosts { get; set; } = new List<UserJobPost>();
 }

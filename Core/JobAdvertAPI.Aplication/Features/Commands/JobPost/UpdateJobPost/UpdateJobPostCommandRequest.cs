@@ -10,7 +10,7 @@ namespace JobAdvertAPI.Aplication.Features.Commands.JobPost.UpdateJobPost
     public class UpdateJobPostCommandRequest : IRequest<UpdateJobPostCommandResponse>
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+       
       
         public string Title { get; set; }
         public string CompanyName { get; set; }

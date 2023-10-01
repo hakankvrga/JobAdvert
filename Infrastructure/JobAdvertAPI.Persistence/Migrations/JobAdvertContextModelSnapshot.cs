@@ -114,14 +114,14 @@ namespace JobAdvertAPI.Persistence.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "c2f492b4-c4f0-407a-95e5-a8861abb893f",
+                            ConcurrencyStamp = "4e2c915b-33a0-470b-aa28-6f21bf669887",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "fb0af7e0-b0d1-486c-8030-a36a1f516536",
+                            ConcurrencyStamp = "7d81adb5-3f76-4350-8d05-cc7688d0400b",
                             Name = "NormalUser",
                             NormalizedName = "NORMALUSER"
                         });
@@ -236,12 +236,40 @@ namespace JobAdvertAPI.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("JobPost", (string)null);
+                });
+
+            modelBuilder.Entity("JobAdvertAPI.Domain.Entities.JobPostAppUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("JobPostId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("Id")
+                        .HasName("PK_JobPostAppUser");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("JobPostId");
+
+                    b.ToTable("JobPostAppUser", (string)null);
                 });
 
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.UserJobPost", b =>
@@ -418,6 +446,25 @@ namespace JobAdvertAPI.Persistence.Migrations
                     b.HasDiscriminator().HasValue("UserCvFile");
                 });
 
+            modelBuilder.Entity("JobAdvertAPI.Domain.Entities.JobPostAppUser", b =>
+                {
+                    b.HasOne("JobAdvertAPI.Domain.Entities.Identity.AppUser", "AppUser")
+                        .WithMany("JobPostAppUsers")
+                        .HasForeignKey("AppUserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_JobPostAppUser_AppUser");
+
+                    b.HasOne("JobAdvertAPI.Domain.Entities.JobPost", "JobPost")
+                        .WithMany("JobPostAppUsers")
+                        .HasForeignKey("JobPostId")
+                        .IsRequired()
+                        .HasConstraintName("FK_JobPostAppUser_JobPost");
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("JobPost");
+                });
+
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.UserJobPost", b =>
                 {
                     b.HasOne("JobAdvertAPI.Domain.Entities.ApplyStatus", "ApplyStatus")
@@ -508,8 +555,15 @@ namespace JobAdvertAPI.Persistence.Migrations
                     b.Navigation("UserJobPosts");
                 });
 
+            modelBuilder.Entity("JobAdvertAPI.Domain.Entities.Identity.AppUser", b =>
+                {
+                    b.Navigation("JobPostAppUsers");
+                });
+
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.JobPost", b =>
                 {
+                    b.Navigation("JobPostAppUsers");
+
                     b.Navigation("UserJobPosts");
                 });
 #pragma warning restore 612, 618

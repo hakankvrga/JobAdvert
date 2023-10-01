@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobAdvertAPI.Persistence.Migrations
 {
     [DbContext(typeof(JobAdvertContext))]
-    [Migration("20230926231408_mig_1")]
+    [Migration("20230928044405_mig_1")]
     partial class mig_1
     {
         /// <inheritdoc />
@@ -112,6 +112,22 @@ namespace JobAdvertAPI.Persistence.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            ConcurrencyStamp = "41cd717a-e5ab-40f2-884c-b5e97b97925e",
+                            Name = "Employer",
+                            NormalizedName = "EMPLOYER"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            ConcurrencyStamp = "e86c286f-c3a7-47a5-a32b-f905ba917a1f",
+                            Name = "NormalUser",
+                            NormalizedName = "NORMALUSER"
+                        });
                 });
 
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.Identity.AppUser", b =>
@@ -222,9 +238,6 @@ namespace JobAdvertAPI.Persistence.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

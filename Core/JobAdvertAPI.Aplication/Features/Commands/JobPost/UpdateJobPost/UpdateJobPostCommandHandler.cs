@@ -26,7 +26,7 @@ namespace JobAdvertAPI.Aplication.Features.Commands.JobPost.UpdateJobPost
         public async Task<UpdateJobPostCommandResponse> Handle(UpdateJobPostCommandRequest request, CancellationToken cancellationToken)
         {
             JobAdvertAPI.Domain.Entities.JobPost jobPost = await _jobPostReadRepository.GetByIdAsync(request.Id);
-            jobPost.UserId = request.UserId;
+            
             
             jobPost.Title = request.Title;
             jobPost.CompanyName = request.CompanyName;

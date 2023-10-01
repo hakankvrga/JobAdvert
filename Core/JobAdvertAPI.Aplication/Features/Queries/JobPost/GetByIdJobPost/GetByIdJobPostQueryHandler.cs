@@ -27,7 +27,7 @@ namespace JobAdvertAPI.Aplication.Features.Queries.JobPost.GetByIdJobPost
             return new()
             {
                 
-                UserId = jobPost.UserId,
+                
                 CompanyName = jobPost.CompanyName,
                 Description = jobPost.Description,
                 EndDate = jobPost.EndDate,

@@ -12,9 +12,7 @@ namespace JobAdvertAPI.Persistence.Contexts;
 
 public partial class JobAdvertContext : IdentityDbContext<AppUser,AppRole, string>
 {
-    public JobAdvertContext()
-    {
-    }
+  
 
     public JobAdvertContext(DbContextOptions<JobAdvertContext> options)
         : base(options)
@@ -31,7 +29,7 @@ public partial class JobAdvertContext : IdentityDbContext<AppUser,AppRole, strin
     public virtual DbSet<UserCvFile> UserCvFiles { get; set; }
     public virtual DbSet<JobPostImageFile> JobPostImageFiles { get; set; }
 
-    
+    public DbSet<JobPostAppUser> JobPostAppUsers { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -83,6 +81,28 @@ public partial class JobAdvertContext : IdentityDbContext<AppUser,AppRole, strin
 
            
         });
+
+
+        modelBuilder.Entity<JobPostAppUser>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_JobPostAppUser");
+
+            entity.ToTable("JobPostAppUser");
+
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.JobPost).WithMany(p => p.JobPostAppUsers)
+                .HasForeignKey(d => d.JobPostId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_JobPostAppUser_JobPost");
+
+            entity.HasOne(d => d.AppUser).WithMany(p => p.JobPostAppUsers)
+                .HasForeignKey(d => d.AppUserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_JobPostAppUser_AppUser");
+
+        }); 
 
         modelBuilder.Entity<AppRole>().HasData(
        new AppRole { Id = "1", Name = AppRole.EmployerRole, NormalizedName = AppRole.EmployerRole.ToUpper() },
