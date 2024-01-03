@@ -1,5 +1,4 @@
 ﻿using JobAdvertAPI.Domain.Entities.common;
-using JobAdvertAPI.Domain.Entities.Identity;
 
 namespace JobAdvertAPI.Domain.Entities;
 
@@ -15,7 +14,7 @@ public partial class JobPost : BaseEntity
     public DateTime StartDate { get; set; }
 
 
-    public ICollection<AppUser> AppUsers { get; set; }
+    public ICollection<JobPostAppUser> JobPostAppUsers { get; set; }
     public DateTime EndDate { get; set; }
 
     public ICollection<JobPostImageFile> JobPostImageFiles { get; set; }

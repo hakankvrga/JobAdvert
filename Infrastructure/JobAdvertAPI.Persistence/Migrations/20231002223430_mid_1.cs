@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JobAdvertAPI.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class mig_1 : Migration
+    public partial class mid_1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -214,6 +214,30 @@ namespace JobAdvertAPI.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "JobPostAppUser",
+                columns: table => new
+                {
+                    JobPostId = table.Column<int>(type: "int", nullable: false),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobPostAppUser", x => new { x.JobPostId, x.AppUserId });
+                    table.ForeignKey(
+                        name: "FK_JobPostAppUser_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_JobPostAppUser_JobPost_JobPostId",
+                        column: x => x.JobPostId,
+                        principalTable: "JobPost",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "JobPostJobPostImageFile",
                 columns: table => new
                 {
@@ -270,8 +294,8 @@ namespace JobAdvertAPI.Persistence.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1", "41cd717a-e5ab-40f2-884c-b5e97b97925e", "Employer", "EMPLOYER" },
-                    { "2", "e86c286f-c3a7-47a5-a32b-f905ba917a1f", "NormalUser", "NORMALUSER" }
+                    { "1", "bb4c5a8d-57ee-4807-8715-ae78de78f983", "Employer", "EMPLOYER" },
+                    { "2", "7e4a76d5-bceb-4e64-9cb1-af351b0760ef", "NormalUser", "NORMALUSER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -314,6 +338,11 @@ namespace JobAdvertAPI.Persistence.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_JobPostAppUser_AppUserId",
+                table: "JobPostAppUser",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_JobPostJobPostImageFile_JobPostsId",
                 table: "JobPostJobPostImageFile",
                 column: "JobPostsId");
@@ -346,6 +375,9 @@ namespace JobAdvertAPI.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "JobPostAppUser");
 
             migrationBuilder.DropTable(
                 name: "JobPostJobPostImageFile");

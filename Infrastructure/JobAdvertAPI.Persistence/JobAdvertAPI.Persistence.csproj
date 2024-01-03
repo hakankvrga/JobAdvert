@@ -22,8 +22,4 @@
     <ProjectReference Include="..\..\Core\JobAdvertAPI.Aplication\JobAdvertAPI.Aplication.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Concretes\" />
-  </ItemGroup>
-
 </Project>

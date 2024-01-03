@@ -4,6 +4,7 @@ using JobAdvertAPI.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobAdvertAPI.Persistence.Migrations
 {
     [DbContext(typeof(JobAdvertContext))]
-    partial class JobAdvertContextModelSnapshot : ModelSnapshot
+    [Migration("20231003013532_mig_3")]
+    partial class mig_3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,14 +117,14 @@ namespace JobAdvertAPI.Persistence.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "876f434e-9e31-4cdb-96c7-3a97e4fe4b97",
+                            ConcurrencyStamp = "f863a2a9-8ec5-473d-b406-7a21d84084d5",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "ee77b675-1d86-4847-a802-331a79cb8efc",
+                            ConcurrencyStamp = "75b36120-03f9-4b44-8203-e733b39be36c",
                             Name = "NormalUser",
                             NormalizedName = "NORMALUSER"
                         });
@@ -282,6 +285,9 @@ namespace JobAdvertAPI.Persistence.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id")
                         .HasName("PK_ApplyStatus");

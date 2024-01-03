@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace JobAdvertAPI.Infrastructure.Enums;
 
-namespace JobAdvertAPI.Infrastructure.Enums
+public enum StorageType
 {
-    public enum StorageType
-    {
-        Local,
-        Azure,
-        AWS
-    }
+    Local,
+    Azure,
+    AWS
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobAdvertAPI.Persistence.Migrations
 {
     [DbContext(typeof(JobAdvertContext))]
-    [Migration("20231001003934_mig_2")]
+    [Migration("20231003013017_mig_2")]
     partial class mig_2
     {
         /// <inheritdoc />
@@ -117,14 +117,14 @@ namespace JobAdvertAPI.Persistence.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "bc8a2cfb-714a-4863-b685-d25213611ea2",
+                            ConcurrencyStamp = "53f9a52e-647a-48a8-82a9-90431e835302",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "40d043ad-04d6-4981-80c3-c12f2d021771",
+                            ConcurrencyStamp = "88d982a4-40e0-4547-a3c3-4bee850a145c",
                             Name = "NormalUser",
                             NormalizedName = "NORMALUSER"
                         });
@@ -246,32 +246,17 @@ namespace JobAdvertAPI.Persistence.Migrations
 
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.JobPostAppUser", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("JobPostId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("JobPostId", "AppUserId");
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("JobPostId");
-
-                    b.ToTable("JobPostAppUsers");
+                    b.ToTable("JobPostAppUser");
                 });
 
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.UserJobPost", b =>
@@ -281,6 +266,9 @@ namespace JobAdvertAPI.Persistence.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("ApplyDate")
                         .HasColumnType("datetime");
@@ -302,6 +290,8 @@ namespace JobAdvertAPI.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("PK_ApplyStatus");
+
+                    b.HasIndex("AppUserId");
 
                     b.HasIndex("ApplyStatusId");
 
@@ -469,6 +459,10 @@ namespace JobAdvertAPI.Persistence.Migrations
 
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.UserJobPost", b =>
                 {
+                    b.HasOne("JobAdvertAPI.Domain.Entities.Identity.AppUser", "AppUser")
+                        .WithMany("UserJobPosts")
+                        .HasForeignKey("AppUserId");
+
                     b.HasOne("JobAdvertAPI.Domain.Entities.ApplyStatus", "ApplyStatus")
                         .WithMany("UserJobPosts")
                         .HasForeignKey("ApplyStatusId")
@@ -480,6 +474,8 @@ namespace JobAdvertAPI.Persistence.Migrations
                         .HasForeignKey("JobPostId")
                         .IsRequired()
                         .HasConstraintName("FK_UserJobPost_JobPost");
+
+                    b.Navigation("AppUser");
 
                     b.Navigation("ApplyStatus");
 
@@ -560,6 +556,8 @@ namespace JobAdvertAPI.Persistence.Migrations
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.Identity.AppUser", b =>
                 {
                     b.Navigation("JobPostAppUsers");
+
+                    b.Navigation("UserJobPosts");
                 });
 
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.JobPost", b =>

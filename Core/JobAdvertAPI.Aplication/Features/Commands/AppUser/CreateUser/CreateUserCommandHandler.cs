@@ -1,61 +1,50 @@
 ﻿using JobAdvertAPI.Aplication.Abstractions.Services;
 using JobAdvertAPI.Aplication.DTOs.User;
-using JobAdvertAPI.Aplication.Exceptions;
 using JobAdvertAPI.Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace JobAdvertAPI.Aplication.Features.Commands.AppUser.CreateUser
+namespace JobAdvertAPI.Aplication.Features.Commands.AppUser.CreateUser;
+
+public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
 {
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
+    readonly IUserService _userService;
+    private readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
+
+
+    public CreateUserCommandHandler(IUserService userService, UserManager<Domain.Entities.Identity.AppUser> userManager)
     {
-        readonly IUserService _userService;
-        private readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
+        _userService = userService;
+        _userManager = userManager;
+    }
 
+    public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
+    {
 
-        public CreateUserCommandHandler(IUserService userService, UserManager<Domain.Entities.Identity.AppUser> userManager)
+        CreateUserResponse response = await _userService.CreateAsync(new() 
         {
-            _userService = userService;
-            _userManager = userManager;
-        }
+            Email = request.email,
+            NameSurname = request.nameSurname,
+            UserName = request.userName,
+            Password = request.password,
+            PasswordConfirm = request.passwordConfirm
+        }); //alınan parametrelerle kullanıcı oluşturuluyor
 
-        public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
+        if (response.Succeeded) //kullanıcı oluşturulduysa
         {
-
-            CreateUserResponse response = await _userService.CreateAsync(new()
+            var user = await _userManager.FindByNameAsync(request.userName);
+            if (user != null)
             {
-                Email = request.email,
-                NameSurname = request.nameSurname,
-                UserName = request.userName,
-                Password = request.password,
-                PasswordConfirm = request.passwordConfirm
-            });
-
-            if (response.Succeeded)
-            {
-                var user = await _userManager.FindByNameAsync(request.userName);
-                if (user != null)
-                {
-                    await _userManager.AddToRoleAsync(user, AppRole.EmployerRole);
-                }
+                await _userManager.AddToRoleAsync(user, AppRole.EmployerRole); 
+                //kullanıcıya employer rolü atanıyor
             }
-            return new()
-            {
-                Message= response.Message,
-                Succeeded = response.Succeeded
-            };
-
-
-
-
-
-            //throw new UserCreateFailedException();
-
         }
+        return new()
+        {
+            Message= response.Message,
+            Succeeded = response.Succeeded
+        };
+
+
     }
 }

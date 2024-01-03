@@ -9,11 +9,11 @@ namespace JobAdvertAPI.API.Extensions
     {
         public static void ConfigureExceptionHandler<T>(this WebApplication application, ILogger<T> logger)
         {
-            application.UseExceptionHandler(builder =>
+            application.UseExceptionHandler(builder => //Global Exception Handler
             {
-                builder.Run(async context =>
+                builder.Run(async context => 
                 {
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError; 
                     context.Response.ContentType = MediaTypeNames.Application.Json;
 
                   var contextFeature =  context.Features.Get<IExceptionHandlerFeature>();
@@ -25,7 +25,6 @@ namespace JobAdvertAPI.API.Extensions
                             StatusCode = context.Response.StatusCode,
                             Message = contextFeature.Error.Message,
                             Title = "Hata Alındı!"
-
                         }));
                         
                     }

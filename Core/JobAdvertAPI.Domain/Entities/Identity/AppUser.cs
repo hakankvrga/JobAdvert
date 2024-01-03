@@ -2,7 +2,7 @@
 
 namespace JobAdvertAPI.Domain.Entities.Identity;
 
-public sealed class AppUser : IdentityUser<string>
+public  class AppUser : IdentityUser<string>
 {
     public string NameSurname { get; set; }
 
@@ -10,6 +10,7 @@ public sealed class AppUser : IdentityUser<string>
 
     public DateTime? RefreshTokenEndDate { get; set; }
 
-
-    public ICollection<JobPost> JobPosts { get; set; }
+    
+    public ICollection<JobPostAppUser> JobPostAppUsers { get; set; }
+    public virtual ICollection<UserJobPost> UserJobPosts { get; set; } = new List<UserJobPost>();
 }

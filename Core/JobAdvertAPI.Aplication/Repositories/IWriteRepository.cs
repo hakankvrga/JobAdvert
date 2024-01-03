@@ -1,22 +1,20 @@
 ﻿using JobAdvertAPI.Domain.Entities.common;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace JobAdvertAPI.Aplication.Repositories
+namespace JobAdvertAPI.Aplication.Repositories;
+
+public interface IWriteRepository<T> : IRepository<T> where T : BaseEntity// IWriteRepository  classını oluşturduk ve
+                                                                          // T tipinde BaseEntity sınıfından kalıtım aldık
 {
-    public interface IWriteRepository<T> : IRepository<T> where T : BaseEntity
-    {
-        Task<bool> AddAsync(T model);
-        Task<bool> AddRangeAsync(List<T> datas);
-        bool Remove(T model);
-        bool RemoveRange(List<T> datas);
-        Task<bool> RemoveAsync(int id);
-        bool Update(T model);
-
-        Task<int> SaveAsync();
-    }
+    Task<bool> AddAsync(T model);// Task<bool> tipinde AddAsync
+                                 // adında bir method oluşturduk
+    Task<bool> AddRangeAsync(List<T> datas);// Task<bool> tipinde
+                                            // AddRangeAsync adında bir method oluşturduk
+    bool Remove(T model);// bool tipinde Remove
+                         // adında bir method oluşturduk
+    bool RemoveRange(List<T> datas);// bool tipinde RemoveRange
+                                    // adında bir method oluşturduk
+    Task<bool> RemoveAsync(int id);// Task<bool> tipinde RemoveAsync
+                                   // adında bir method oluşturduk
+    bool Update(T model);
+    Task<int> SaveAsync();
 }

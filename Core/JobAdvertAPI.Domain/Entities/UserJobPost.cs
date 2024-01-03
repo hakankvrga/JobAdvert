@@ -1,4 +1,5 @@
 ﻿using JobAdvertAPI.Domain.Entities.common;
+using JobAdvertAPI.Domain.Entities.Identity;
 using System;
 using System.Collections.Generic;
 
@@ -10,7 +11,9 @@ public partial class UserJobPost : BaseEntity
 
     public int JobPostId { get; set; }
 
-    public int UserId { get; set; }
+    public string AppUserId { get; set; }
+
+    
 
     public int ApplyStatusId { get; set; }
 
@@ -19,6 +22,7 @@ public partial class UserJobPost : BaseEntity
     
 
     public virtual ApplyStatus ApplyStatus { get; set; } = null!;
+    public virtual AppUser AppUser { get; set; } = null!;
 
     public virtual JobPost JobPost { get; set; } = null!;
 

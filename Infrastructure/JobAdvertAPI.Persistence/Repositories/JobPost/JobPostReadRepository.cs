@@ -1,18 +1,12 @@
 ﻿using JobAdvertAPI.Aplication.Repositories;
 using JobAdvertAPI.Domain.Entities;
 using JobAdvertAPI.Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace JobAdvertAPI.Persistence.Repositories
+namespace JobAdvertAPI.Persistence.Repositories;
+
+public class JobPostReadRepository : ReadRepository<JobPost>, IJobPostReadRepository
 {
-    public class JobPostReadRepository : ReadRepository<JobPost>, IJobPostReadRepository
+    public JobPostReadRepository(JobAdvertContext context) : base(context)
     {
-        public JobPostReadRepository(JobAdvertContext context) : base(context)
-        {
-        }
     }
 }

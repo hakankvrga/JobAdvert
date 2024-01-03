@@ -2,26 +2,23 @@
 
 using FluentValidation.AspNetCore;
 using JobAdvertAPI.API.Configurations.ColumnWriter;
+using JobAdvertAPI.API.Extensions;
 using JobAdvertAPI.Aplication;
 using JobAdvertAPI.Aplication.Validators.JobPosts;
 using JobAdvertAPI.Infrastructure;
 using JobAdvertAPI.Infrastructure.Filters;
 using JobAdvertAPI.Infrastructure.Services.Storage.Azure;
-using JobAdvertAPI.Infrastructure.Services.Storage.Local;
 using JobAdvertAPI.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using Serilog.Events;
 using Serilog.Context;
 using Serilog.Core;
 using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
 using System.Security.Claims;
 using System.Text;
-using JobAdvertAPI.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,20 +79,20 @@ columnOpt.Store.Remove(StandardColumn.Properties);
 columnOpt.Store.Add(StandardColumn.LogEvent);
 columnOpt.AdditionalColumns = new Collection<SqlColumn> { sqlColumn };
 
-Logger log = new LoggerConfiguration()
+Logger log = new LoggerConfiguration() // serilog ayarlarý
 .WriteTo.Console()
-.WriteTo.File("logs/log.txt")
+.WriteTo.File("logs/log.txt") //loglarýn kaydedileceði dosya
 .WriteTo.MSSqlServer(
-connectionString: builder.Configuration.GetConnectionString("SqlCon"),
+connectionString: builder.Configuration.GetConnectionString("SqlCon"), // loglarýn kaydedileceði veritabaný
 sinkOptions: new MSSqlServerSinkOptions
 {
     AutoCreateSqlTable = true,
     TableName = "Logs",
-},
+}, // loglarýn kaydedileceði tablo
 appConfiguration: null,
 columnOptions: columnOpt
 )
-.WriteTo.Seq(builder.Configuration["Seq:ServerURL"])
+.WriteTo.Seq(builder.Configuration["Seq:ServerURL"]) // loglarýn kaydedileceði seq server
 .Enrich.FromLogContext()
 .Enrich.With<CustomUserNameColumn>()
 .MinimumLevel.Information()

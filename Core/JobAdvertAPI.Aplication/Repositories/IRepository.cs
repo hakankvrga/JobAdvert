@@ -1,15 +1,10 @@
 ﻿using JobAdvertAPI.Domain.Entities.common;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace JobAdvertAPI.Aplication.Repositories
+namespace JobAdvertAPI.Aplication.Repositories;
+
+public interface IRepository<T> where T : BaseEntity //IRepository  cllasını oluşturduk ve
+                                                     //T tipinde BaseEntity sınıfından kalıtım aldık
 {
-    public interface IRepository<T> where T : BaseEntity
-    {
-        DbSet<T> Table { get; }
-    }
+    DbSet<T> Table { get; } //DbSet<T> tipinde Table adında bir property oluşturduk
 }

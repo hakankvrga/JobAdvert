@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobAdvertAPI.Persistence.Migrations
 {
     [DbContext(typeof(JobAdvertContext))]
-    [Migration("20231001034434_mig_3")]
-    partial class mig_3
+    [Migration("20231002223430_mid_1")]
+    partial class mid_1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,14 +117,14 @@ namespace JobAdvertAPI.Persistence.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "4e2c915b-33a0-470b-aa28-6f21bf669887",
+                            ConcurrencyStamp = "bb4c5a8d-57ee-4807-8715-ae78de78f983",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "7d81adb5-3f76-4350-8d05-cc7688d0400b",
+                            ConcurrencyStamp = "7e4a76d5-bceb-4e64-9cb1-af351b0760ef",
                             Name = "NormalUser",
                             NormalizedName = "NORMALUSER"
                         });
@@ -246,33 +246,17 @@ namespace JobAdvertAPI.Persistence.Migrations
 
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.JobPostAppUser", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime");
-
                     b.Property<int>("JobPostId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id")
-                        .HasName("PK_JobPostAppUser");
+                    b.HasKey("JobPostId", "AppUserId");
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("JobPostId");
-
-                    b.ToTable("JobPostAppUser", (string)null);
+                    b.ToTable("JobPostAppUser");
                 });
 
             modelBuilder.Entity("JobAdvertAPI.Domain.Entities.UserJobPost", b =>
@@ -454,14 +438,14 @@ namespace JobAdvertAPI.Persistence.Migrations
                     b.HasOne("JobAdvertAPI.Domain.Entities.Identity.AppUser", "AppUser")
                         .WithMany("JobPostAppUsers")
                         .HasForeignKey("AppUserId")
-                        .IsRequired()
-                        .HasConstraintName("FK_JobPostAppUser_AppUser");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("JobAdvertAPI.Domain.Entities.JobPost", "JobPost")
                         .WithMany("JobPostAppUsers")
                         .HasForeignKey("JobPostId")
-                        .IsRequired()
-                        .HasConstraintName("FK_JobPostAppUser_JobPost");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AppUser");
 
